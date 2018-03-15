@@ -14,6 +14,10 @@ E = ord('e')
 Z = ord('z')
 X = ord('x')
 C = ord('c')
+F = ord('f')
+G = ord('g')
+V = ord('v')
+B = ord('b')
 ONE = ord('1')
 TWO = ord('2')
 THREE = ord('3')
@@ -62,6 +66,35 @@ def turnright(speed):
     left.setSpeed(speed)
     right.setSpeed(speed)
 
+def forright(speed):
+    s2 = int(0.75 * speed)
+    left.run(Adafruit_MotorHAT.BACKWARD)
+    right.run(Adafruit_MotorHAT.FORWARD)
+    left.setSpeed(speed)
+    right.setSpeed(s2)
+
+def forleft(speed):
+    s2 = int(0.75 * speed)
+    left.run(Adafruit_MotorHAT.BACKWARD)
+    right.run(Adafruit_MotorHAT.FORWARD)
+    left.setSpeed(s2)
+    right.setSpeed(speed)
+
+def for2right(speed):
+    s2 = int(0.25 * speed)
+    left.run(Adafruit_MotorHAT.BACKWARD)
+    right.run(Adafruit_MotorHAT.FORWARD)
+    left.setSpeed(speed)
+    right.setSpeed(s2)
+
+def for2left(speed):
+    s2 = int(0.25 * speed)
+    left.run(Adafruit_MotorHAT.BACKWARD)
+    right.run(Adafruit_MotorHAT.FORWARD)
+    left.setSpeed(s2)
+    right.setSpeed(speed)
+
+
 def smallLeft():
     turnleft(51)
     time.sleep(.1)
@@ -108,9 +141,9 @@ def main():
             forward(speed)
         elif key == S:
             backward(speed)
-        elif key == A:
+        elif key == V:
             turnleft(speed)
-        elif key == D:
+        elif key == B:
             turnright(speed)
         elif key == Z:
             smallLeft()
@@ -118,6 +151,14 @@ def main():
             smallForward()
         elif key == C:
             smallRight()
+        elif key == F:
+            forleft(speed)
+        elif key == G:
+            forright(speed)
+        elif key == A:
+            for2left(speed)
+        elif key == D:
+            for2right(speed)
         elif key == E:
             stop()
         elif key == ONE:
