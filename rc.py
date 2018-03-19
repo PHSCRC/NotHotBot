@@ -27,8 +27,8 @@ FIVE = ord('5')
 def print(*args):
     pass
 
-left = mh.getMotor(3)
-right = mh.getMotor(4)
+left = mh.getMotor(2)
+right = mh.getMotor(1)
 speed = 100
 
 def turnOffMotors():
@@ -39,14 +39,14 @@ def turnOffMotors():
 def forward(speed):
     print('forward')
     left.run(Adafruit_MotorHAT.BACKWARD)
-    right.run(Adafruit_MotorHAT.FORWARD)
+    right.run(Adafruit_MotorHAT.BACKWARD)
     left.setSpeed(speed)
     right.setSpeed(speed)
 
 def backward(speed):
     print('backward')
     left.run(Adafruit_MotorHAT.FORWARD)
-    right.run(Adafruit_MotorHAT.BACKWARD)
+    right.run(Adafruit_MotorHAT.FORWARD)
     left.setSpeed(speed)
     right.setSpeed(speed)
 
@@ -62,35 +62,35 @@ def turnright(speed):
     print('right')
     speed = 75
     left.run(Adafruit_MotorHAT.BACKWARD)
-    right.run(Adafruit_MotorHAT.BACKWARD)
+    right.run(Adafruit_MotorHAT.FORWARD)
     left.setSpeed(speed)
     right.setSpeed(speed)
 
 def forright(speed):
     s2 = int(0.75 * speed)
     left.run(Adafruit_MotorHAT.BACKWARD)
-    right.run(Adafruit_MotorHAT.FORWARD)
+    right.run(Adafruit_MotorHAT.BACKWARD)
     left.setSpeed(speed)
     right.setSpeed(s2)
 
 def forleft(speed):
     s2 = int(0.75 * speed)
     left.run(Adafruit_MotorHAT.BACKWARD)
-    right.run(Adafruit_MotorHAT.FORWARD)
+    right.run(Adafruit_MotorHAT.BACKWARD)
     left.setSpeed(s2)
     right.setSpeed(speed)
 
 def for2right(speed):
     s2 = int(0.25 * speed)
     left.run(Adafruit_MotorHAT.BACKWARD)
-    right.run(Adafruit_MotorHAT.FORWARD)
+    right.run(Adafruit_MotorHAT.BACKWARD)
     left.setSpeed(speed)
     right.setSpeed(s2)
 
 def for2left(speed):
     s2 = int(0.25 * speed)
     left.run(Adafruit_MotorHAT.BACKWARD)
-    right.run(Adafruit_MotorHAT.FORWARD)
+    right.run(Adafruit_MotorHAT.BACKWARD)
     left.setSpeed(s2)
     right.setSpeed(speed)
 
