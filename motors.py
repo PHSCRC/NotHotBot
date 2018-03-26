@@ -76,6 +76,10 @@ def bothSet(*args):
     rightSet(*args)
 
 
+def bothSetVar(*args):
+    leftSetVar(*args)
+    rightSetVar(*args)
+
 
 def init():
     bothStop()

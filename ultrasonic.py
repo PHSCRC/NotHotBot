@@ -6,13 +6,13 @@ GPIO.setmode(GPIO.BCM)
 TRIG = int(sys.argv[1])
 ECHO = int(sys.argv[2])
 
-print 'Measuring...'
+print('Measuring...')
 
 GPIO.setup(TRIG,GPIO.OUT)
 GPIO.setup(ECHO,GPIO.IN)
 
 GPIO.output(TRIG, False)
-print 'Sensor Is Settling...'
+print('Sensor Is Settling...')
 time.sleep(2)
 
 GPIO.output(TRIG, True)
@@ -27,4 +27,4 @@ while GPIO.input(ECHO) == 1:
 pulse_duration = pulse_end - pulse_start
 distance = pulse_duration * 17150
 distance = round(distance, 2)
-print 'Distance:',distance,'cm'
+print('Distance:',distance,'cm')
