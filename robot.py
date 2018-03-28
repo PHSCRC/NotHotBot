@@ -17,7 +17,7 @@ class Robot():
     LUX_CUTOFF = 50 #completely random
     FLAME_LED = 18
     START_LED = 23
-    SERIAL_PORT = serial.Serial('/dev/ttyUSB0', 9600, timeout=0)
+    #SERIAL_PORT = serial.Serial('/dev/ttyUSB0', 9600, timeout=0)
 
     def __init__(self, left, right, versa):
         self.left = left
@@ -63,15 +63,17 @@ class Robot():
         self.versa.run(Adafruit_MotorHAT.FORWARD if boolean else Adafruit_MotorHAT.RELEASE)
 
     def readFlameSensor(self):
-        curr = SERIAL_PORT.readline().decode().strip()
-        return int(curr)
+        # curr = SERIAL_PORT.readline().decode().strip()
+        # return int(curr)
+        pass
 
     def waitForSoudStart(self):
-        while True:
-            curr = SERIAL_PORT.readline().decode().strip()
-            if curr == 'sound':
-                return
-            delay(50)
+        # while True:
+        #     curr = SERIAL_PORT.readline().decode().strip()
+        #     if curr == 'sound':
+        #         return
+        #     delay(50)
+        pass
 
     def startLed(self, boolean):
         GPIO.output(START_LED, boolean)
