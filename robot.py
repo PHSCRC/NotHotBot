@@ -29,7 +29,7 @@ class Robot():
         self.tcs = Adafruit_TCS34725.TCS34725()
         self.tcs.set_interrupt(False)
         GPIO.setmode(GPIO.BCM)
-        setupLeds()
+        self.setupLeds()
 
     def setupLeds():
         GPIO.setup(self.FLAME_LED, GPIO.OUT)
