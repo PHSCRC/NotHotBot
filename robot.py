@@ -106,4 +106,4 @@ class Robot():
         return self.sen.readSingleMetric(REAR_LEFT)
 
     def readAllUltras(self):
-        retrun self.sen.readAllMetric()
+        return self.sen.readAllMetric()
