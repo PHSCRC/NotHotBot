@@ -89,7 +89,7 @@ class Encoder:
 
 
 def createLeftRight():
-    l, r = Encoder(27, 22), Encoder(17, 4)
+    l, r = Encoder(27, 22), Encoder(17, 19)
     l.start()
     r.start()
     return l, r

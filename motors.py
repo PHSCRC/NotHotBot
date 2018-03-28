@@ -6,13 +6,13 @@ import atexit
 _mh = Adafruit_MotorHAT(addr=0x60)
 
 _LEFT_NUM = 2
-_LEFT_FORWARD = Adafruit_MotorHAT.BACKWARD
-_LEFT_BACKWARD = Adafruit_MotorHAT.FORWARD
+_LEFT_FORWARD = Adafruit_MotorHAT.FORWARD
+_LEFT_BACKWARD = Adafruit_MotorHAT.BACKWARD
 _left = _mh.getMotor(_LEFT_NUM)
 
 _RIGHT_NUM = 1
-_RIGHT_FORWARD = Adafruit_MotorHAT.BACKWARD
-_RIGHT_BACKWARD = Adafruit_MotorHAT.FORWARD
+_RIGHT_FORWARD = Adafruit_MotorHAT.FORWARD
+_RIGHT_BACKWARD = Adafruit_MotorHAT.BACKWARD
 _right = _mh.getMotor(_RIGHT_NUM)
 
 _RELEASE = Adafruit_MotorHAT.RELEASE

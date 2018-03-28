@@ -16,14 +16,16 @@ def inp(l, r):
         return i
     return fun
 
+lol = []
+
 def create():
     l, r = encoder.createLeftRight()
-    kp = 0.05
-    ki = 0.01
-    kd = 0.01
-    kf = 0.01
+    kp = 5
+    ki = 1
+    kd = 1
+    kf = 1
     source = inp(l, r)
-    output = motors.bothSetVar
+    output = lambda x: motors.bothSetVar(x) or lol.append(x)
     ctrlr = wpilib.PIDController(kp, ki, kd, kf, source, output)
     ctrlr.setInputRange(-1000, 1000)
     ctrlr.setOutputRange(-1.0, 1.0)
