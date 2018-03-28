@@ -31,11 +31,11 @@ class Robot():
         GPIO.setmode(GPIO.BCM)
         self.setupLeds()
 
-    def setupLeds():
+    def setupLeds(self):
         GPIO.setup(self.FLAME_LED, GPIO.OUT)
         GPIO.setup(self.START_LED, GPIO.OUT)
 
-    def cleanupLeds():
+    def cleanupLeds(self):
         GPIO.cleanup(self.FLAME_LED)
         GPIO.cleannup(self.START_LED)
 
