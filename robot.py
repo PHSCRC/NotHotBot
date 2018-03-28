@@ -11,13 +11,13 @@ class Robot():
     #SERIAL_PORT = serial.Serial('/dev/ttyUSB0', 9600, timeout=0)
 
     def __init__(self, left, right, versa):
-        self.FRONT = 0
-        self.LEFT = 1
-        self.RIGHT = 2
-        self.FRONT_RIGHT = 3
-        self.FRONT_LEFT = 4
-        self.REAR_RIGHT = 5
-        self.REAR_LEFT = 6
+        self.FRONT = 6
+        self.LEFT = 1 #Good
+        self.RIGHT = 5 #good
+        self.FRONT_RIGHT = 3 #Good
+        self.FRONT_LEFT = 4 #good
+        self.REAR_RIGHT = 0 #good
+        self.REAR_LEFT = 2
         self.LUX_CUTOFF = 250 #completely random
         self.FLAME_LED = 18
         self.START_LED = 23
