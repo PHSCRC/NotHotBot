@@ -37,7 +37,7 @@ class Robot():
 
     def cleanupLeds(self):
         GPIO.cleanup(self.FLAME_LED)
-        GPIO.cleannup(self.START_LED)
+        GPIO.cleanup(self.START_LED)
 
     def goStraight(self, distance):
         pass
@@ -106,7 +106,7 @@ class Robot():
     def readRearRight(self):
         return self.sen.readSingleMetric(self.REAR_RIGHT)
 
-    def raedRearLeft(self):
+    def readRearLeft(self):
         return self.sen.readSingleMetric(self.REAR_LEFT)
 
     def readAllUltras(self):
