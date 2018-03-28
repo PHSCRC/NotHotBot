@@ -24,7 +24,7 @@ class Robot():
 
         self.left = left
         self.right = right
-        self.versa = versa
+        self._versa = versa
         self.sen = Sensors()
         self.tcs = Adafruit_TCS34725.TCS34725()
         self.tcs.set_interrupt(False)
@@ -61,8 +61,8 @@ class Robot():
         pass
 
     def versa(self, boolean):
-        self.versa.setSpeed(255 if boolean else 0)
-        self.versa.run(Adafruit_MotorHAT.FORWARD if boolean else Adafruit_MotorHAT.RELEASE)
+        self._versa.setSpeed(255 if boolean else 0)
+        self._versa.run(Adafruit_MotorHAT.FORWARD if boolean else Adafruit_MotorHAT.RELEASE)
 
     def readFlameSensor(self):
         # curr = SERIAL_PORT.readline().decode().strip()
