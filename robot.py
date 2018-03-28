@@ -81,6 +81,7 @@ class Robot():
 
     def readRoomLine(self):
         r, g, b, c = self.tcs.get_raw_data()
+        print(Adafruit_TCS34725.calculate_lux(r, g, b))
         return Adafruit_TCS34725.calculate_lux(r, g, b)>LUX_CUTOFF
 
     def readFront(self):
