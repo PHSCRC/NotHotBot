@@ -18,7 +18,7 @@ class Robot():
         self.FRONT_LEFT = 4
         self.REAR_RIGHT = 5
         self.REAR_LEFT = 6
-        self.LUX_CUTOFF = 50 #completely random
+        self.LUX_CUTOFF = 250 #completely random
         self.FLAME_LED = 18
         self.START_LED = 23
 
