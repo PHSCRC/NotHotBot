@@ -1,0 +1,6 @@
+Front = 24, 25
+Left = 20, 21
+Right = 1, 7
+Front Right = 5, 0
+Front Left = 9, 10
+Back = 13, 6
