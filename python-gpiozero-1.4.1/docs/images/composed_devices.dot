@@ -1,0 +1,26 @@
+/* vim: set et sw=4 sts=4: */
+
+digraph classes {
+    graph [rankdir=TB];
+    node [shape=rect, style=filled, color="#298029", fontname=Sans, fontcolor="#ffffff", fontsize=10];
+    edge [arrowhead=onormal, style=dashed];
+
+    RGBLED->LED;
+    RGBLED->PWMLED;
+    LEDBoard->LED;
+    LEDBoard->PWMLED;
+    LEDBarGraph->LED;
+    LEDBarGraph->PWMLED;
+
+    ButtonBoard->Button;
+
+    TrafficLightsBuzzer->TrafficLights;
+    TrafficLightsBuzzer->Buzzer;
+    TrafficLightsBuzzer->Button;
+
+    Robot->Motor;
+    Motor->DigitalOutputDevice;
+    Motor->PWMOutputDevice;
+
+    Servo->PWMOutputDevice;
+}

@@ -1,28 +1,18 @@
-from ultrasonicClass import Sensors
+import ultrasonic as u
 import Adafruit_TCS34725
 import time
-from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
+import motors
+import encoder
+import wpilib
 import RPi.GPIO as GPIO
 import serial
 
-class Robot():
-
-    def __init__(self, left, right, versa):
-        self.FRONT = 6
-        self.LEFT = 1 #Good
-        self.RIGHT = 5 #good
-        self.FRONT_RIGHT = 3 #Good
-        self.FRONT_LEFT = 4 #good
-        self.REAR_RIGHT = 0 #good
-        self.REAR_LEFT = 2
+class Robot:
+    def __init__(self):
         self.LUX_CUTOFF = 250 #completely random
         self.FLAME_LED = 18
         self.START_LED = 23
 
-        self.left = left
-        self.right = right
-        self._versa = versa
-        self.sen = Sensors()
         self.tcs = Adafruit_TCS34725.TCS34725()
         self.tcs.set_interrupt(False)
         GPIO.setmode(GPIO.BCM)
@@ -65,11 +55,11 @@ class Robot():
 
     def readFlameSensor(self):
         curr = self.SERIAL_PORT.readline().decode().strip()
-        
+
         try :
             int(curr)
         except ValueError :
-            curr = -1 
+            curr = -1
         else :
             return int(curr)
 
@@ -93,25 +83,63 @@ class Robot():
         return Adafruit_TCS34725.calculate_lux(r, g, b)>self.LUX_CUTOFF
 
     def readFront(self):
-        return self.sen.readSingleMetric(self.FRONT)
+        return u.front()
 
     def readLeft(self):
-        return self.sen.readSingleMetric(self.LEFT)
+        return u.left()
 
     def readRight(self):
-        return self.sen.readSingleMetric(self.RIGHT)
+        return u.right()
 
     def readFrontLeft(self):
-        return self.sen.readSingleMetric(self.FRONT_LEFT)
+        return u.front_left()
 
     def readFrontRight(self):
-        return self.sen.readSingleMetric(self.FRONT_RIGHT)
+        return u.front_right()
 
-    def readRearRight(self):
-        return self.sen.readSingleMetric(self.REAR_RIGHT)
-
-    def readRearLeft(self):
-        return self.sen.readSingleMetric(self.REAR_LEFT)
+    def readRear(self):
+        return u.rear()
 
     def readAllUltras(self):
-        return self.sen.readAllMetric()
+        return u.all()
+
+    def straightForwardUntil(self, func, speed):
+        total_l, total_r = 0, 0
+        l, r = encoder.getLeftRight()
+        def inp():
+            nonlocal total_l, total_r
+            print(total_l, total_r)
+            total_l += l.get_steps()
+            total_r += r.get_steps()
+            if total_r == 0 or total_l == 0:
+                i = 1
+            else:
+                i = total_r / total_l
+            if i > 10:
+                return 10
+            return i
+        def out(i):
+            motors.leftSet(int(speed * (1-i)) if i > 0 else speed)
+            motors.rightSet(int(speed * (1+i)) if i < 0 else speed)
+        kp = 5
+        ki = 1
+        kd = 1
+        kf = 1
+        source = inp
+        output = out
+        ctrlr = wpilib.PIDController(kp, ki, kd, kf, source, output)
+        ctrlr.setInputRange(0, 10)
+        ctrlr.setOutputRange(-1.0, 1.0)
+        ctrlr.setAbsoluteTolerance(0.1)
+        ctrlr.setContinuous()
+        ctrlr.origSource()
+        ctrlr.setSetpoint(1)
+        motors.bothSet(speed)
+        time.sleep(0.01)
+        if func():
+            motors.bothSet(0)
+        ctrlr.enable()
+        while not func():
+            pass
+        ctrlr.disable()
+        motors.bothSet(0)

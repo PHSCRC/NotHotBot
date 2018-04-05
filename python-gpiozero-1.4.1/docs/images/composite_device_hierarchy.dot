@@ -1,0 +1,41 @@
+/* vim: set et sw=4 sts=4: */
+
+digraph classes {
+    graph [rankdir=RL];
+    node [shape=rect, style=filled, fontname=Sans, fontsize=10];
+    edge [];
+
+    /* Abstract classes */
+    node [color="#9ec6e0", fontcolor="#000000"]
+    Device;
+    CompositeDevice;
+    CompositeOutputDevice;
+    LEDCollection;
+
+    /* Concrete classes */
+    node [color="#2980b9", fontcolor="#ffffff"];
+    CompositeDevice->Device;
+    CompositeOutputDevice->CompositeDevice;
+    LEDCollection->CompositeOutputDevice;
+
+    LEDBoard->LEDCollection;
+    LEDBarGraph->LEDCollection;
+
+    PiLiter->LEDBoard;
+    PiLiterBarGraph->LEDBarGraph;
+    TrafficLights->LEDBoard;
+    SnowPi->LEDBoard;
+    PiTraffic->TrafficLights;
+    PiStop->TrafficLights;
+    TrafficLightsBuzzer->CompositeOutputDevice;
+    FishDish->TrafficLightsBuzzer;
+    TrafficHat->TrafficLightsBuzzer;
+    Robot->CompositeDevice;
+    RyanteckRobot->Robot;
+    CamJamKitRobot->Robot;
+    Motor->CompositeDevice;
+    Servo->CompositeDevice;
+    AngularServo->Servo;
+    Energenie->Device;
+    ButtonBoard->CompositeDevice;
+}

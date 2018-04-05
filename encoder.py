@@ -87,9 +87,21 @@ class Encoder:
         self._remainder %= self._steps_per_cycle # remainder always remains positive
         return cycles
 
+_left = None
+_right = None
 
-def createLeftRight():
-    l, r = Encoder(27, 22), Encoder(17, 19)
-    l.start()
-    r.start()
+def getLeftRight():
+    global _left, _right
+    if _left:
+        l = _left
+    else:
+        l = Encoder(27, 22)
+        l.start()
+        _left = l
+    if _right:
+        r = _right
+    else:
+        r = Encoder(17, 19)
+        r.start()
+        _right = r
     return l, r

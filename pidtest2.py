@@ -29,10 +29,10 @@ def out(i):
     lol.append(i)
     motors.leftSet(int(speed * (1-i)) if i > 0 else speed)
     motors.rightSet(int(speed * (1+i)) if i < 0 else speed)
-    
+
 
 def create():
-    l, r = encoder.createLeftRight()
+    l, r = encoder.getLeftRight()
     kp = 5
     ki = 1
     kd = 1
@@ -60,8 +60,8 @@ def start(c):
     c.setSetpoint(1)
     c.enable()
 
-def f(c):
-    while not c.onTarget():
+def f(func):
+    while not func():
         pass
 
 if __name__ == '__main__':
