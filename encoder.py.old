@@ -8,7 +8,6 @@ import math
 import threading
 import os
 import atexit
-import time
 
 import RPi.GPIO as GPIO
 
@@ -112,30 +111,26 @@ def getLeftRight():
 if __name__ == '__main__':
     path_req = 'lmao_encoder_req'
     path_resp = 'lmao_encoder_resp'
-    os.mkfifo(path_req)
-    os.mkfifo(path_resp)
-    req = open(path_req, 'r')
-    print('acquired req')
-    resp = open(path_resp, 'w')
-    print('acquired resp')
     def cleanup():
-        req.close()
-        resp.close()
         os.remove(path_req)
         os.remove(path_resp)
     l, r = getLeftRight()
+    os.mkfifo(path_req)
+    os.mkfifo(path_resp)
     atexit.register(cleanup)
     while True:
-        line = req.readline().strip()
-        if line == '':
-            break
-        print(line)
-        if line == 'left':
-            resp.write(str(l.get_steps()) + '\n')
-            resp.flush()
-        elif line == 'right':
-            resp.write(str(r.get_steps()) + '\n')
-            resp.flush()
-        elif line == 'end':
-            break
-        time.sleep(0.01)
+        with open(path_req, 'r') as req:
+            print('acquired req')
+            line = req.readline().strip()
+            if line != '':
+                print(line)
+                with open(path_resp, 'w') as resp:
+                    print('acquired resp')
+                    if line == 'left':
+                        resp.write(str(l.get_steps()) + '\n')
+                        resp.flush()
+                    elif line == 'right':
+                        resp.write(str(r.get_steps()) + '\n')
+                        resp.flush()
+                    elif line == 'end':
+                        break

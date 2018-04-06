@@ -1,10 +1,13 @@
 from ultrasonic import steph
 distanceFromStart=0
 possibleDogLocations=[True, True, True, False]
-
+oldDistances=[]
 def moveForward(distance):
   global distanceFromStart
-  #distanceFromStart+=distance
+  global moved
+  moved=True
+  distanceFromStart+=distance
+  input()
   print(distanceFromStart)
 
 #this is the value that will be returned when added to the overall program that is the estimated start position of the robot
@@ -14,15 +17,26 @@ def findLocation():
   import pickle
   from array import array
   print("start")
+  
+  distanceTable=array("i")
+  with open("noDog.txt", 'rb') as pickleFile:
+    distanceTable = pickle.load(pickleFile)
+  
   def getDistances():
     #return the distances in the order: up, upright, right...
     #the distances must also be corrected to be as if they were coming from the center of the robot(that should be simple addition)
     '''
+    y=80
+    x=180
     start=y*1952+x*8
-    a=distanceTable[start:start+8]
-    a=a[-4:]+a[:-4]
+    a=[80, 0, 10, 20, 0, 55, 0]
     '''
-    return steph()
+    global moved
+    if(moved):
+        global oldDistances
+        oldDistances=steph()
+        moved=False
+    return oldDistances
   print(getDistances())
   
   #this is the acceptable uncertainty for exactly where the robot is in cm. This should be greater than or equal to ERRORTHRESHOLD
@@ -34,11 +48,8 @@ def findLocation():
   #this value is the cumalative error threshold for the ultrasonics
   #with the ignore a single direction thing, this needs to be less than 10 to work well
   #I will be working on removing the remove a wall thing today (Apr 3)
-  ERRORTHRESHOLD=30
-  
-  distanceTable=array("i")
-  with open("noDog.txt", 'rb') as pickleFile:
-    distanceTable = pickle.load(pickleFile)
+  ERRORTHRESHOLD=20
+
   
   dogTop=array("i")
   with open("dogTop.txt", 'rb') as pickleFile:
@@ -78,7 +89,6 @@ def findLocation():
         if(dif>ERRORTHRESHOLD):
           return False
     return True
-  print(checkPositionWithDog(20919, getDistances()))
   def checkPositionWithDog(position, dirdis):
     walls=checkPosition(position, dirdis, distanceTable)
     '''
@@ -113,7 +123,8 @@ def findLocation():
             possibleDogLocations[3]=True
             '''
     return walls
-  
+  print(distanceTable[201919])
+  print(checkPositionWithDog(20919, getDistances()))
   #this class stores and handles each individual location
   class Location:
     def __init__(self, position, dirdis):
@@ -287,21 +298,18 @@ def findLocation():
       return True
     return False
   print(len(possibleLocations))
-  for i in range(0, len(possibleLocations)):
-      print(possibleLocations[i].getPosition())
   #this removes the locations that aren't possible from possible locations until we are left with only positions in an ACCEPTABLEUNCERTAINTY by ACCEPTABLEUNCERTAINTY square
-'''  while(not checkIfDone(possibleLocations)):
+  while(not checkIfDone(possibleLocations)):
+    print("\n\n\nnew")
     moveForward(MOVEDISTANCE)
+    for i in range(0, len(possibleLocations)):
+        print(possibleLocations[i].getPosition()) 
     for location in possibleLocations:
       location.update(getDistances())
       #I may or may not have accidently copy pasted the if above and been frustrated as to why update was not working
       if(location.getUp() == None and location.getRight() == None and location.getDown() == None and location.getLeft() == None):
         possibleLocations.remove(location)
   return ret
-'''
+moved=True
 a=findLocation()
 print(a)
-
-
-
-

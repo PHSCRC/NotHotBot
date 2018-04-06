@@ -1,5 +1,7 @@
-import wiringpi
+import RPi.GPIO as GPIO
 import math, time
+
+GPIO.setmode(GPIO.BCM)
 
 class HcSr04:
     PULSE_TRIGGER = 0.00001  # 10 μsec
@@ -10,17 +12,15 @@ class HcSr04:
     def __init__(self, trig, echo):
         self.trig = trig
         self.echo = echo
-        wiringpi.wiringPiSetupGpio()
-        wiringpi.pinMode(self.trig, wiringpi.OUTPUT)
-        wiringpi.pinMode(self.echo, wiringpi.INPUT)
-        wiringpi.digitalWrite(self.trig, wiringpi.LOW)
-        time.sleep(1)
+        GPIO.setup(self.trig, GPIO.OUT)
+        GPIO.setup(self.echo, GPIO.IN)
+        GPIO.output(self.trig, GPIO.LOW)
 
     def wait_for_echo(self, wait_value, wait_time):
         timeout = False
         start_time = time.time()
         current_time = start_time
-        while wiringpi.digitalRead(self.echo) != wait_value:
+        while GPIO.input(self.echo) != wait_value:
             current_time = time.time()
             timeout = (current_time - start_time) > wait_time
             if timeout is True:
@@ -28,17 +28,20 @@ class HcSr04:
         return current_time, not timeout
 
     def read(self):
+        GPIO.setup(self.trig, GPIO.OUT)
+        GPIO.setup(self.echo, GPIO.IN)
+        GPIO.output(self.trig, GPIO.LOW)
         time.sleep(self.PULSE_TRIGGER_INTERVAL)
-        wiringpi.digitalWrite(self.trig, wiringpi.HIGH)
+        GPIO.output(self.trig, GPIO.HIGH)
         time.sleep(self.PULSE_TRIGGER)
-        wiringpi.digitalWrite(self.trig, wiringpi.LOW)
-        start_time, echo_result = self.wait_for_echo(wiringpi.HIGH, self.TIMEOUT)
+        GPIO.output(self.trig, GPIO.LOW)
+        start_time, echo_result = self.wait_for_echo(GPIO.HIGH, self.TIMEOUT)
         if echo_result:
-            end_time, echo_result = self.wait_for_echo(wiringpi.LOW, self.TIMEOUT)
+            end_time, echo_result = self.wait_for_echo(GPIO.LOW, self.TIMEOUT)
             if echo_result:
                 return True, (end_time - start_time) * (self.SPEED_OF_SOUND * 1000 / 2)
             else:
-                print("wait_for_echo(wiringpi.HIGH) error")
+                print("wait_for_echo(GPIO.HIGH) error")
         else:
-            print("wait_for_echo(wiringpi.LOW) error")
+            print("wait_for_echo(GPIO.LOW) error")
         return False, 0

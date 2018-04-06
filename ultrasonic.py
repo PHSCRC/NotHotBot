@@ -1,4 +1,5 @@
 from gpiozero import DistanceSensor
+from ul import HcSr04
 
 _sensor_defs = {
     'FRONT': (5, 0),
@@ -18,6 +19,8 @@ _sensors = {
     'BACK': None,
 }
 
+_tl_sensors = {k: HcSr04(v[0], v[1]) for k, v in _sensor_defs.items()}
+
 def _makeSensor(trig, echo):
     return DistanceSensor(trigger=trig, echo=echo, max_distance=3, queue_len=3)
 
@@ -27,11 +30,20 @@ def enableAll():
 
 def disableAll():
     for k, v in _sensor_defs.items():
+        _sensors[k]._read = lambda: 0.0
+    # do the above first to give some delay
+    for k, v in _sensor_defs.items():
+        _sensors[k].close()
         _sensors[k] = None
+
+def _enable(sensorName):
+    if _sensors[sensorName] is not None:
+        raise RuntimeError(sensorName + ' already enabled')
+    _sensors[sensorName] = _makeSensor(*_sensor_defs[sensorName])
 
 def _makeEnable(sensorName):
     def f():
-        _sensors[sensorName] = _makeSensor(*_sensor_defs[sensorName])
+        _enable(sensorName)
     return f
 
 en_front = _makeEnable('FRONT')
@@ -43,6 +55,8 @@ en_back = _makeEnable('BACK')
 
 def _makeDisable(sensorName):
     def f():
+        _sensors[sensorName]._read = lambda: 0.0
+        _sensors[sensorName].close()
         _sensors[sensorName] = None
     return f
 
@@ -65,7 +79,22 @@ right = _makeFunc('RIGHT')
 left = _makeFunc('LEFT')
 back = _makeFunc('BACK')
 
-_sensor_arr = [_sensors['FRONT'], _sensors['FRONT_RIGHT'], _sensors['RIGHT'], _sensors['BACK'], _sensors['LEFT'], _sensors['FRONT_LEFT']]
+def _makeTLFunc(sensorName):
+    def f():
+        return _tl_sensors[sensorName].read()[1] / 1000
+    return f
+
+tl_front = _makeTLFunc('FRONT')
+tl_front_right = _makeTLFunc('FRONT_RIGHT')
+tl_front_left = _makeTLFunc('FRONT_LEFT')
+tl_right = _makeTLFunc('RIGHT')
+tl_left = _makeTLFunc('LEFT')
+tl_back = _makeTLFunc('BACK')
+
+_tl_sensor_arr = [_tl_sensors['FRONT'], _tl_sensors['FRONT_RIGHT'], _tl_sensors['RIGHT'], _tl_sensors['BACK'], _tl_sensors['LEFT'], _tl_sensors['FRONT_LEFT']]
+
+def tl_all():
+    return list(map(lambda x: x.read()[1] / 1000, _tl_sensor_arr))
 
 def all():
     _sensor_arr = [_sensors['FRONT'], _sensors['FRONT_RIGHT'], _sensors['RIGHT'], _sensors['BACK'], _sensors['LEFT'], _sensors['FRONT_LEFT']]
@@ -78,5 +107,20 @@ def steph():
     l.insert(5, 0)
     return l
 
+_staged = None
+
+# disable everything but keep track of what was enabled
+def stage():
+    global _staged
+    _staged = {k: v is not None for k, v in _sensors.items()}
+    disableAll()
+
+# reenable what was previously enabled with stage
+def unstage():
+    if _staged is None:
+        raise RuntimeError('nothing to unstage')
+    for k, v in _staged.items():
+        if v:
+            _enable(k)
 
 enableAll() #REMOVE PROBABLY IDK

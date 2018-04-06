@@ -1,0 +1,71 @@
+import os
+import functools
+
+_path_req = 'lmao_encoder_req'
+_path_resp = 'lmao_encoder_resp'
+total_l = 0
+total_r = 0
+
+
+if not os.path.exists(_path_req) or not os.path.exists(_path_resp):
+    raise RuntimeError("Encoder daemon is not running")
+
+def right():
+    global total_r
+    with open(_path_req, 'w') as req:
+        print('acquired req')
+        req.write('right\n')
+        req.flush()
+        with open(_path_resp, 'r') as resp:
+            print('acquired resp')
+            res = resp.readline().strip()
+            while res == '':
+                res = resp.readline().strip()
+    result = int(res)
+    total_r += result
+    print('right:', result)
+    return result
+
+def left():
+    global total_l
+    with open(_path_req, 'w') as req:
+        print('acquired req')
+        req.write('left\n')
+        req.flush()
+        with open(_path_resp, 'r') as resp:
+            print('acquired resp')
+            res = resp.readline().strip()
+            while res == '':
+                res = resp.readline().strip()
+    result = int(res)
+    total_l += result
+    print('left:', result)
+    return result
+
+def end():
+    with open(_path_req, 'w') as req:
+        req.write('end\n')
+        req.flush()
+        with open(_path_resp, 'r') as resp:
+            pass
+
+def clearLeft():
+    global total_l
+    total_l = 0
+
+def clearRight():
+    global total_r
+    total_r = 0
+
+def clearBoth():
+    clearLeft()
+    clearRight()
+
+def totalLeft():
+    return total_l
+
+def totalRight():
+    return total_r
+
+def totalBoth():
+    return total_l, total_r
