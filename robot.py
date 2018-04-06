@@ -276,3 +276,68 @@ class Robot:
             l = e.totalLeft()
             return l >= steps
         self.rotateRightUntil(condition, speed, pre2=pre)
+
+    def rotateLeftUntil(self, func, speed, pre1=None, pre2=None):
+        u.stage()
+        if pre1 is not None:
+            pre1()
+        total_l, total_r = 0, 0
+        def inp():
+            nonlocal total_l, total_r
+            print(total_l, total_r)
+            total_l += e.left()
+            total_r += e.right()
+            if total_r == 0 or total_l == 0:
+                i = 1
+            else:
+                ratio = total_r / -total_l
+                adjust = abs(ratio - 1) / (-total_l + total_r)
+                i = 1 + adjust if ratio > 1 else 1 - adjust
+            if i > 10:
+                return 10
+            return i
+        f = False
+        def out(i):
+            nonlocal f
+            if f:
+                print(i)
+                motors.leftSet(-(int(speed * (1-i)) if i > 0 else speed))
+                motors.rightSet(int(speed * (1+i)) if i < 0 else speed)
+            else:
+                f = True
+        kp = 5
+        ki = 1
+        kd = 1
+        kf = 1
+        source = inp
+        output = out
+        ctrlr = wpilib.PIDController(kp, ki, kd, kf, source, output)
+        ctrlr.setInputRange(0, 10)
+        ctrlr.setOutputRange(-1.0, 1.0)
+        ctrlr.setAbsoluteTolerance(0.1)
+        ctrlr.setContinuous()
+        ctrlr.setSetpoint(1)
+        inp()
+        if pre2 is not None:
+            pre2()
+        motors.leftSet(-speed)
+        motors.rightSet(speed)
+        time.sleep(0.01)
+        if func():
+            motors.bothSet(0)
+        ctrlr.enable()
+        while not func():
+            pass
+        ctrlr.disable()
+        motors.bothSet(0)
+        u.unstage()
+
+    def expRotateLeftBy(self, angle, speed):
+        steps = int((angle / 180 * math.pi * self.ROTATION_KEY) / self.DISTANCE_PER_REV * self.STEPS_PER_REV)
+        def pre():
+            e.clearBoth()
+        def condition():
+            time.sleep(0.001)
+            r = e.totalRight()
+            return r >= steps
+        self.rotateLeftUntil(condition, speed, pre2=pre)
